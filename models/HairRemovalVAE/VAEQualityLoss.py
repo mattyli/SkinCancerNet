@@ -1,8 +1,11 @@
 import torch
 import torch.nn.functional as F
 import kornia.losses
+from torchmetrics.image import StructuralSimilarityIndexMeasure
+import torch.nn as nn
+from SSIM import SSIMLoss
 
-class VAEQualityLoss(torch.nn.Module):
+class VAEQualityLoss(nn.Module):
     """
     Loss is a weighted sum of the VAE Loss (reconstruction loss + KL divergence)
     and the structural similarity (SSIM) loss.
@@ -14,8 +17,7 @@ class VAEQualityLoss(torch.nn.Module):
         self.lambda_vae = lambda_vae
         self.lambda_ssim = lambda_ssim
         
-        # Kornia's SSIMLoss computes (1 - SSIM) directly, window_size=11 is standard for SSIM.
-        self.ssim_loss = kornia.losses.SSIMLoss(window_size=11, reduction='mean')
+        self.ssim_loss = SSIMLoss(window_size=3, sigma=1.5)
 
     def forward(self, x, x_hat, mu, logvar):
         # A. Reconstruction Loss (MSE)

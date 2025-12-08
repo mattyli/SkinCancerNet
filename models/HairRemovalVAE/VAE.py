@@ -104,14 +104,8 @@ def train_VAE(model,
             optimizer.zero_grad()            
             x_recon, mu, logvar = model(imgs)
             
-            # Compute Loss
-            loss_output = criterion(imgs, x_recon, mu, logvar)
-            
-            # Handle if criterion returns a tuple (total_loss, mse, kl...) or just scalar
-            if isinstance(loss_output, tuple):
-                loss = loss_output[0] # Assume first element is total loss for backprop
-            else:
-                loss = loss_output
+            # Compute Loss (unpack per the VAEQualityLoss)
+            loss, mse_loss, kl_loss, loss_ssim = criterion(imgs, x_recon, mu, logvar)
             
             # Backpropagation
             loss.backward()
@@ -138,12 +132,7 @@ def train_VAE(model,
                 x_recon, mu, logvar = model(imgs)
                 
                 # Compute Loss
-                loss_output = criterion(imgs, x_recon, mu, logvar)
-                
-                if isinstance(loss_output, tuple):
-                    loss = loss_output[0]
-                else:
-                    loss = loss_output
+                loss, mse_loss, kl_loss, loss_ssim = criterion(imgs, x_recon, mu, logvar)
                 
                 running_val_loss += loss.item()
 
