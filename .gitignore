@@ -1,2 +1,4 @@
 HAM10K/
 docs/
+models/HairRemovalVAE/VAE_checkpoints/
+*.pth
