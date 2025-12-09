@@ -33,10 +33,10 @@ def get_args():
                         help="Scheduler patience (default: 3)")
     
     # Loss Function Weights
-    parser.add_argument("--lambda_vae", type=float, default=0.8, 
-                        help="Weight for VAE Loss (Recon + KL) (default: 0.8)")
-    parser.add_argument("--lambda_ssim", type=float, default=0.2, 
-                        help="Weight for SSIM Loss (default: 0.2)")
+    parser.add_argument("--lambda_vae", type=float, default=1.0, 
+                        help="Weight for VAE Loss (Recon + KL) (default: 1.0)")
+    parser.add_argument("--lambda_ssim", type=float, default=1.0, 
+                        help="Weight for SSIM Loss (default: 1.0)")
 
     # System / Logging
     parser.add_argument("--num_workers", type=int, default=0, 
@@ -108,6 +108,9 @@ def main():
         lambda_ssim=args.lambda_ssim
     )
 
+    # create subfolder within the checkpoints directory
+    dump_dir = os.makedirs(os.path.join(args.checkpoint_path, args.run_name), exist_ok=True)
+
     train_VAE(
         model=model,
         train_loader=train_loader,
@@ -116,7 +119,7 @@ def main():
         optimizer=optimizer,
         scheduler=scheduler,
         num_epochs=args.num_epochs,
-        checkpoint_path=args.checkpoint_path,
+        checkpoint_path=dump_dir,
         run_name=args.run_name,
         device=device
     )

@@ -86,7 +86,7 @@ class SSIM(nn.Module):
         return _ssim(img1, img2, self.window, self.window_size, self.channel, self.size_average)
 
 class SSIMLoss(nn.Module):
-    def __init__(self, window_size=11, sigma=1.5):
+    def __init__(self, window_size=3, sigma=1.5):
         super().__init__()
         self.ssim = SSIM(window_size, sigma)
 

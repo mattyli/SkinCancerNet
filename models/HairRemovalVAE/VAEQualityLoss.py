@@ -12,7 +12,7 @@ class VAEQualityLoss(nn.Module):
 
     Change the respective lambdas as needed 
     """
-    def __init__(self, lambda_vae=0.8, lambda_ssim=0.2):
+    def __init__(self, lambda_vae, lambda_ssim):
         super().__init__()
         self.lambda_vae = lambda_vae
         self.lambda_ssim = lambda_ssim
@@ -30,8 +30,8 @@ class VAEQualityLoss(nn.Module):
         kl_loss = -0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp())
         kl_loss /= x.size(0) 
 
-        # Combine for VAE Loss
-        loss_vae = mse_loss + kl_loss
+        # Loss_VAE is defined as: mse loss - kl_div loss
+        loss_vae = mse_loss - kl_loss
 
         # C. SSIM Loss
         # Kornia calculates the structural dissimilarity (loss) automatically
